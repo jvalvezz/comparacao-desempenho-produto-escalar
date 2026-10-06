@@ -1,56 +1,83 @@
-# Produto escalar: como compilar e executar
+# Instrucoes de compilacao e execucao
 
-## Compilacao no Ubuntu
-
-Entre na pasta do projeto e compile:
+Os programas foram executados no Ubuntu/WSL acessando os arquivos do Windows pelo caminho:
 
 ```bash
-cd /caminho/da/pasta/prova-lucca/src
+/mnt/c/prova-lucca
+```
+
+## 1. Acessar a pasta do projeto
+
+```bash
+cd /mnt/c/prova-lucca/src
+```
+
+## 2. Compilar a versao sequencial
+
+```bash
 gcc sequencial.c -O2 -o sequencial
+```
+
+## 3. Compilar a versao paralela
+
+```bash
 gcc paralela.c -O2 -pthread -o paralela
 ```
 
-## Execucao
+## 4. Descobrir o maximo de CPUs logicas
 
-Versao sequencial:
+```bash
+getconf _NPROCESSORS_ONLN
+```
+
+No computador utilizado, o valor retornado foi:
+
+```text
+12
+```
+
+Portanto, a configuracao maxima testada foi com `12` threads.
+
+## 5. Executar com a entrada pequena
 
 ```bash
 ./sequencial entradas/pequena.txt
-./sequencial entradas/media.txt
-./sequencial entradas/grande.txt
-```
-
-Versao paralela:
-
-```bash
 ./paralela entradas/pequena.txt 2
 ./paralela entradas/pequena.txt 4
 ./paralela entradas/pequena.txt 8
-./paralela entradas/pequena.txt $(getconf _NPROCESSORS_ONLN)
+./paralela entradas/pequena.txt 12
 ```
 
-Repita os mesmos comandos para `media.txt` e `grande.txt`.
+## 6. Executar com a entrada media
 
-## O que anotar
-
-Cada execucao imprime:
-
-```text
-versao,threads,n,resultado,tempo_segundos
+```bash
+./sequencial entradas/media.txt
+./paralela entradas/media.txt 2
+./paralela entradas/media.txt 4
+./paralela entradas/media.txt 8
+./paralela entradas/media.txt 12
 ```
 
-Repita cada combinacao pelo menos 3 vezes e guarde os tempos individuais.
+## 7. Executar com a entrada grande
 
-## Conferencia
-
-O campo `resultado` da versao sequencial e da paralela deve ser praticamente igual para a mesma entrada.
-Pode aparecer uma pequena diferenca nas ultimas casas decimais por causa da ordem diferente das somas com `double`.
-
-## Calculos do relatorio
-
-Para cada entrada e numero de threads:
-
-```text
-speedup = tempo_sequencial_medio / tempo_paralelo_medio
-eficiencia = speedup / numero_de_threads
+```bash
+./sequencial entradas/grande.txt
+./paralela entradas/grande.txt 2
+./paralela entradas/grande.txt 4
+./paralela entradas/grande.txt 8
+./paralela entradas/grande.txt 12
 ```
+
+## 8. Repeticoes
+
+Cada combinacao de entrada e configuracao deve ser executada pelo menos 3 vezes.
+
+Exemplo:
+
+```bash
+./paralela entradas/grande.txt 4
+./paralela entradas/grande.txt 4
+./paralela entradas/grande.txt 4
+```
+
+Os tempos individuais devem ser salvos no arquivo `resultado.csv`.
